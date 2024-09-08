@@ -1,4 +1,4 @@
-package com.hsf301.project.mentorbook_backend;
+package com.hsf301.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
