@@ -13,13 +13,13 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "Users")
+@Table(name = "Users", schema = "dbo")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UserID")
-    private Long id;
+    private Integer id;
 
     @Column(name = "Username", nullable = false, length = 50)
     private String username;
