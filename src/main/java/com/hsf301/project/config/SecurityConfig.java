@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -12,11 +13,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
+        @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // .csrf(csrf -> csrf
+            //     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Sử dụng cookie để lưu token
+            // ) //uncomment phần này để dùng csrf
+
+            .csrf(csrf -> csrf.disable()) //comment phần này để dùng csrf
+
             .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().permitAll() // Cho phép truy cập vào tất cả các yêu cầu
+                .requestMatchers("/login", "/token/csrf").permitAll() // Cho phép truy cập vào endpoint /login
+                .anyRequest().permitAll() // Cần xác thực cho các yêu cầu khác
             );
         return http.build();
     }
