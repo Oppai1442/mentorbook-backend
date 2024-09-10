@@ -1,37 +1,30 @@
 package com.hsf301.project.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import com.hsf301.project.model.LoginRequest;
+import com.hsf301.project.model.User;
+import com.hsf301.project.service.UserService;
 
 @RestController
+@RequestMapping("/api")
 public class LoginController {
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        //TODO: process POST request
+        // Gọi service để xác thực
+        User user = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
-        if ("user".equals(loginRequest.getUsername()) && "password".equals(loginRequest.getPassword())) {
+        if (user != null) {
             return ResponseEntity.ok("Login successful!");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class LoginRequest {
-        private String username;
-        private String password;
-    }
-
 }
