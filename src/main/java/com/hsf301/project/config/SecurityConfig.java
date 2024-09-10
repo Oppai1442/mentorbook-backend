@@ -9,19 +9,30 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-        @Bean
+    @Value("${security.csrf.enabled}")
+    private boolean csrfEnabled;
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        //
+        if (csrfEnabled) {
+            http.csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            );
+        } else {
+            http.csrf(
+                csrf -> csrf.disable()
+            ); 
+        }
+        
         http
-            // .csrf(csrf -> csrf
-            //     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Sử dụng cookie để lưu token
-            // ) //uncomment phần này để dùng csrf
-
-            .csrf(csrf -> csrf.disable()) //comment phần này để dùng csrf
-
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/login", "/token/csrf").permitAll() // Cho phép truy cập vào endpoint /login
                 .anyRequest().permitAll() // Cần xác thực cho các yêu cầu khác
