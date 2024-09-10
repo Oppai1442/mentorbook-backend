@@ -29,7 +29,7 @@ public class LoginController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public class LoginRequest {
+    public static class LoginRequest {
         private String username;
         private String password;
     }
