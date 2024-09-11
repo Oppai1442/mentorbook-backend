@@ -9,11 +9,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "Users", schema = "dbo")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
