@@ -19,11 +19,10 @@ public class CsrfController {
     @GetMapping("/generate-token")
     public ResponseEntity<ApiResponse<Object>> csrf(CsrfToken token) {
         if (token != null) {
-            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(token.getToken()), HttpStatus.OK.value()));
+            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(token.getToken())));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(new ErrorResponse("Unable to generate CSRF token"),
-                            HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                    .body(new ApiResponse<>(new ErrorResponse("Unable to generate CSRF token")));
         }
     }
 
