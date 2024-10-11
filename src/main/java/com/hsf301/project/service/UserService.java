@@ -14,8 +14,8 @@ public class UserService {
     public User authenticate(String username, String password) {
         User user = userRepository.findByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
-            return user; // Xác thực thành công
+            return user;
         }
-        return null; // Xác thực thất bại
+        return null;
     }
 }
