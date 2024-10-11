@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 public class JwtService {
     private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private final long EXPIRATION_TIME = 86400000; // 1 day in milliseconds
+    private final long EXPIRATION_TIME = 86400000;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
@@ -34,7 +34,6 @@ public class JwtService {
                 .compact();
     }
 
-    // Phương thức để xác thực token
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
@@ -48,7 +47,6 @@ public class JwtService {
         }
     }
 
-    // Phương thức để lấy username từ token
     public String extractUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
@@ -58,7 +56,6 @@ public class JwtService {
         return claims.getSubject();
     }
 
-    // Phương thức để lấy role từ token
     public String extractRole(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
@@ -68,7 +65,6 @@ public class JwtService {
         return claims.get("role", String.class);
     }
 
-    // Phương thức để kiểm tra xem token đã hết hạn hay chưa
     public boolean isTokenExpired(String token) {
         Date expiration = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
