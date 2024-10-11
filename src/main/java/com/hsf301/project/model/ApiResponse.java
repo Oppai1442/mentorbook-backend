@@ -1,5 +1,8 @@
 package com.hsf301.project.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private T data;
-    private int statusCode;
+    private List<Object> data;
+
+    public ApiResponse(Object... data) {
+        this.data = new ArrayList<>();
+        for (Object item : data) {
+            this.data.add(item);
+        }
+    }
 }
