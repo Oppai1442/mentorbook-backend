@@ -1,4 +1,4 @@
-package com.hsf301.project.config;
+package com.hsf301.project.config.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
