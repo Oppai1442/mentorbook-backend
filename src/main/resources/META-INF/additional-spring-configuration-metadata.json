@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "security.csrf.enabled",
+  "type": "java.lang.String",
+  "description": "Toggle CSRF"
+}]}
