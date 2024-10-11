@@ -12,7 +12,7 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.SQLServerDialect
     properties:
       hibernate.default_schema: dbo
