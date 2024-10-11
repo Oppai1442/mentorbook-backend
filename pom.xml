@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
+        <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hsf301.project</groupId>
@@ -68,8 +68,7 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>9.4.0.jre8</version> <!-- Chọn phiên bản phù hợp với môi trường của bạn -->
+            <artifactId>mssql-jdbc</artifactId> <!-- Chọn phiên bản phù hợp với môi trường của bạn -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -99,6 +98,24 @@
 			<version>10.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson depending on your JSON parser -->
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
