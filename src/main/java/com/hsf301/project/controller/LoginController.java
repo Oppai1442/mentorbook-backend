@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hsf301.project.model.LoginRequest;
 import com.hsf301.project.model.User;
+import com.hsf301.project.service.JwtService;
 import com.hsf301.project.service.UserService;
 
 @RestController
@@ -16,13 +17,16 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        // Gọi service để xác thực
         User user = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (user != null) {
-            return ResponseEntity.ok("Login successful!");
+            String token = jwtService.generateToken(user);
+            return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
