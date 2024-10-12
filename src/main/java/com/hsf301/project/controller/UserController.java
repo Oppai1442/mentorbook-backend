@@ -15,8 +15,8 @@ import com.hsf301.project.service.JwtService;
 import com.hsf301.project.service.UserService;
 
 @RestController
-@RequestMapping("/api")
-public class LoginController {
+@RequestMapping("/user")
+public class UserController {
 
     @Autowired
     private UserService userService;
