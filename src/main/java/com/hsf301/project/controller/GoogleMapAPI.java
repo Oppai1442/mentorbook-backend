@@ -15,7 +15,7 @@ public class GoogleMapAPI {
 
     @GetMapping("/geocode")
     public ResponseEntity<Map<String, String>> getURL() {
-        String url = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19347.62494047712!2d106.81797901185585!3d10.849041789835704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgVFAuIEhDTQ!5e1!3m2!1svi!2s!4v1726982911231!5m2!1svi!2s";
+        String url = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d38696.80650538212!2d106.84005865053703!3d10.837008514890446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317521d28bd24323%3A0x6e003b0f1ab73e2f!2sOrigami%20T%C3%B2a%20S10.07!5e1!3m2!1svi!2s!4v1727612264208!5m2!1svi!2s";
         
         return ResponseEntity.ok(Map.of("url", url));
     }
