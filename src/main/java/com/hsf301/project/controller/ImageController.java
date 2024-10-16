@@ -1,5 +1,6 @@
 package com.hsf301.project.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,10 @@ import com.hsf301.project.utils.Utils;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private final Utils utils = new Utils(); // Khai báo đối tượng Utils
+    private final Utils utils = new Utils();
 
-    private static final String UPLOAD_DIR = "C:\\Users\\daeor\\Documents\\Project\\Image";
+    @Value("${ImageController.saveLocation}")
+    private String UPLOAD_DIR;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
@@ -27,7 +29,6 @@ public class ImageController {
         }
 
         try {
-            // Lấy tên gốc và phần mở rộng của tệp
             String originalFilename = file.getOriginalFilename();
 
             if (originalFilename == null) {
@@ -58,10 +59,11 @@ public class ImageController {
     }
 
     @GetMapping("/uploads/{filename}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String filename) {
+    public ResponseEntity<Object> getImage(@PathVariable String filename) {
         File file = new File(UPLOAD_DIR + filename);
+        System.out.println(UPLOAD_DIR + filename);
         if (!file.exists()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found: " + filename);
         }
 
         try {
