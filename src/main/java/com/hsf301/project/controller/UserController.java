@@ -9,7 +9,7 @@ import com.hsf301.project.model.ApiResponse;
 import com.hsf301.project.model.AuthResponse;
 import com.hsf301.project.model.ErrorResponse;
 import com.hsf301.project.model.LoginRequest;
-import com.hsf301.project.model.SignupRequest;
+import com.hsf301.project.model.user.SignupRequest;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.model.user.UserResponse;
 import com.hsf301.project.service.JwtService;
