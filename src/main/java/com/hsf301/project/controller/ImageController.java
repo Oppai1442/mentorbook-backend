@@ -8,11 +8,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import java.security.NoSuchAlgorithmException;
+
+import com.hsf301.project.utils.Utils;
+
 @RestController
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private final Utils utils = new Utils(); // Khai báo đối tượng Utils
+
+    private static final String UPLOAD_DIR = "C:\\Users\\daeor\\Documents\\Project\\Image";
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
@@ -21,16 +27,32 @@ public class ImageController {
         }
 
         try {
-            // Lưu file vào thư mục uploads
+            // Lấy tên gốc và phần mở rộng của tệp
+            String originalFilename = file.getOriginalFilename();
+
+            if (originalFilename == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File name is missing.");
+            }
+
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            String baseName = originalFilename.substring(0, originalFilename.lastIndexOf('.'));
+            
+            long currentTime = System.currentTimeMillis();
+
+            String hash = utils.hashGenerate(baseName + currentTime);
+            
+            String newFileName = hash + currentTime + "_@" + baseName + extension;
+
             File uploadDir = new File(UPLOAD_DIR);
             if (!uploadDir.exists()) {
-                uploadDir.mkdirs(); // Tạo thư mục nếu chưa tồn tại
+                uploadDir.mkdirs();
             }
-            File destinationFile = new File(uploadDir, file.getOriginalFilename());
+            File destinationFile = new File(uploadDir, newFileName);
             file.transferTo(destinationFile);
 
             return ResponseEntity.ok("File uploaded successfully: " + destinationFile.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
         }
     }
