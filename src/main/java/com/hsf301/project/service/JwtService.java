@@ -8,7 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
-import com.hsf301.project.model.User;
+import com.hsf301.project.model.user.User;
 
 import java.security.Key;
 import java.util.Date;
