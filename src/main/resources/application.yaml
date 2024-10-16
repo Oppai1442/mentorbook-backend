@@ -45,3 +45,6 @@ spring:
 security:
   csrf:
     enabled: false
+
+ImageController:
+  saveLocation: C:\Users\daeor\Documents\Project\Image\
