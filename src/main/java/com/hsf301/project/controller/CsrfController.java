@@ -17,12 +17,12 @@ import org.springframework.security.web.csrf.CsrfToken;
 public class CsrfController {
 
     @GetMapping("/generate-token")
-    public ResponseEntity<ApiResponse<Object>> csrf(CsrfToken token) {
+    public ResponseEntity<Object> csrf(CsrfToken token) {
         if (token != null) {
-            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(token.getToken())));
+            return ResponseEntity.ok(new ApiResponse<TokenResponse>(new TokenResponse(token.getToken())));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(new ErrorResponse("Unable to generate CSRF token")));
+                    .body(new ApiResponse<ErrorResponse>(new ErrorResponse("Unable to generate CSRF token")));
         }
     }
 
