@@ -1,11 +1,11 @@
 package com.hsf301.project.service;
 
 import com.hsf301.project.exception.EmailConflictException;
+import com.hsf301.project.exception.InvalidCredentials;
 import com.hsf301.project.model.user.SignupRequest;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -18,25 +18,24 @@ public class UserService {
 
     public User authenticate(String email, String password) {
         User user = userRepository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new InvalidCredentials("Invalid username or password");
         }
-        return null;
+
+        return user;
     }
 
     private User getAccount(String email) {
         return userRepository.findByEmail(email);
     }
 
-    @SuppressWarnings("rawtypes")
-    public ResponseEntity register(SignupRequest signupRequest) {
+    public User register(SignupRequest signupRequest) {
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new EmailConflictException(null);
-            // return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use");
+            throw new EmailConflictException("Email already registered");
         }
 
         User user = new User();
-        user.setUsername("null");
         user.setEmail(signupRequest.getEmail());
         user.setPassword(signupRequest.getPassword());
         user.setFullName(signupRequest.getFullName());
@@ -46,6 +45,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        return null;
+        return user;
     }
 }
