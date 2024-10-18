@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hsf301.project.exception.EmailConflictException;
 import com.hsf301.project.model.ApiResponse;
 import com.hsf301.project.model.AuthResponse;
 import com.hsf301.project.model.ErrorResponse;
@@ -16,8 +17,6 @@ import com.hsf301.project.service.JwtService;
 import com.hsf301.project.service.UserService;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -34,7 +33,7 @@ public class UserController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
         User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
        
         if (user != null) {
@@ -46,16 +45,13 @@ public class UserController {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     @PostMapping("/register")
     public ResponseEntity register(@Valid @RequestBody SignupRequest signupRequest) {
+        User user = userService.register(signupRequest);
+        String token = jwtService.generateToken(user);
 
-        if (signupRequest.getEmail() != null  && signupRequest.getPassword() != null) {
-            userService.register(signupRequest);
-        }
-
-
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user))));
     }
 
 }
