@@ -49,4 +49,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleFileUploadException(FileUploadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(ImageLoadException.class)
+    public ResponseEntity<ErrorResponse> handleImageloadException(ImageLoadException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
 }
