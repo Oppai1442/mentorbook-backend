@@ -1,4 +1,4 @@
-package com.hsf301.project.model;
+package com.hsf301.project.model.user;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
