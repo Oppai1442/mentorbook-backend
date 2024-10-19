@@ -5,6 +5,9 @@ import com.hsf301.project.exception.InvalidCredentials;
 import com.hsf301.project.model.user.SignupRequest;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.repository.UserRepository;
+
+import io.jsonwebtoken.Claims;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -16,6 +19,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JwtService jwtService;
+
     public User authenticate(String email, String password) {
         User user = userRepository.findByEmail(email);
 
@@ -26,8 +32,17 @@ public class UserService {
         return user;
     }
 
-    private User getAccount(String email) {
-        return userRepository.findByEmail(email);
+    public User authenticated(String token) {
+        boolean isTokenValid = jwtService.validateToken(token);
+        User user = null;
+
+        if (isTokenValid) {
+            Claims claims = jwtService.getClaims(token);
+            String email = claims.getSubject();
+            user = userRepository.findByEmail(email);
+        }
+
+        return user;
     }
 
     public User register(SignupRequest signupRequest) {
