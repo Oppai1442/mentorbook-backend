@@ -53,3 +53,6 @@ security:
 
 ImageController:
   saveLocation: C:\Users\daeor\Documents\Project\Image\
+
+Jwt:
+  token: ABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabc
