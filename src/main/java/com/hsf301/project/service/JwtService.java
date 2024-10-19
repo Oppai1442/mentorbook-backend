@@ -6,6 +6,9 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hsf301.project.model.user.User;
@@ -17,8 +20,28 @@ import java.util.Map;
 
 @Service
 public class JwtService {
-    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private final long EXPIRATION_TIME = 86400000;
+    @Value("${Jwt.secretKey}")
+    String secrectKey;
+    private Key SECRET_KEY;
+
+    @Value("${Jwt.useCustomSecrectKey}")
+    Boolean isUseCustomSecrectKey;
+
+    @Value("${Jwt.expirationTime}")
+    private long EXPIRATION_TIME;
+
+    @PostConstruct
+    public void init() {
+        if (isUseCustomSecrectKey) {
+            if (secrectKey == null) {
+                throw new IllegalArgumentException("Secret key is null");
+            }
+            SECRET_KEY = Keys.hmacShaKeyFor(secrectKey.getBytes());
+        } else {
+            SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        }
+    }
+
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
@@ -34,44 +57,38 @@ public class JwtService {
                 .compact();
     }
 
+    public Claims getClaims(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
-            // Token đã hết hạn
             return false;
         } catch (JwtException e) {
-            // Token không hợp lệ
             return false;
         }
     }
 
     public String extractUsername(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = getClaims(token);
         return claims.getSubject();
     }
 
     public String extractRole(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = getClaims(token);
         return claims.get("role", String.class);
     }
 
     public boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        Date expiration = getClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 }
