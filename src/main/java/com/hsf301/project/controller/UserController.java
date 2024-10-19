@@ -9,6 +9,7 @@ import com.hsf301.project.model.ApiResponse;
 import com.hsf301.project.model.AuthResponse;
 import com.hsf301.project.model.ErrorResponse;
 import com.hsf301.project.model.LoginRequest;
+import com.hsf301.project.model.TokenRequest;
 import com.hsf301.project.model.user.SignupRequest;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.model.user.UserResponse;
@@ -17,6 +18,9 @@ import com.hsf301.project.service.JwtService;
 import com.hsf301.project.service.UserService;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -39,14 +43,17 @@ public class UserController {
     public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
         User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
        
-        if (user != null) {
-            String token = jwtService.generateToken(user);
-            return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body(new ErrorResponse("Invalid credentials"));
-        }
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
     }
+
+    @PostMapping("/login-token")
+    public String postMethodName(@Valid @RequestBody TokenRequest entity) {
+        User user = userService.authenticated(entity.getToken());
+        
+        return null;
+    }
+    
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/register")
