@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.hsf301.project.exception.EmailConflictException;
 import com.hsf301.project.model.ApiResponse;
 import com.hsf301.project.model.AuthResponse;
 import com.hsf301.project.model.ErrorResponse;
@@ -13,6 +12,7 @@ import com.hsf301.project.model.LoginRequest;
 import com.hsf301.project.model.user.SignupRequest;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.model.user.UserResponse;
+import com.hsf301.project.service.ImageService;
 import com.hsf301.project.service.JwtService;
 import com.hsf301.project.service.UserService;
 
@@ -31,6 +31,9 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private ImageService imageService;
+
     @SuppressWarnings("rawtypes")
     @PostMapping("/login")
     public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -38,7 +41,7 @@ public class UserController {
        
         if (user != null) {
             String token = jwtService.generateToken(user);
-            return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user))));
+            return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                  .body(new ErrorResponse("Invalid credentials"));
@@ -51,7 +54,7 @@ public class UserController {
         User user = userService.register(signupRequest);
         String token = jwtService.generateToken(user);
 
-        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user))));
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
     }
 
 }
