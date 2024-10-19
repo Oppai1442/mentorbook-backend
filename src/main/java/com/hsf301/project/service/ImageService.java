@@ -5,10 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hsf301.project.exception.FileUploadException;
+import com.hsf301.project.exception.ImageLoadException;
 import com.hsf301.project.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+
+import java.util.Map;
+import java.util.HashMap;
+
 
 import java.security.NoSuchAlgorithmException;
 
@@ -47,5 +53,48 @@ public class ImageService {
         file.transferTo(destinationFile);
 
         return destinationFile.getAbsolutePath();
+    }
+
+    public byte[] getImage(String filename) {
+        File file = new File(UPLOAD_DIR + filename);
+        if (!file.exists()) {
+            throw new ImageLoadException(filename + " does not exist");
+        }
+    
+        try {
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new ImageLoadException("Failed to load image data for " + filename, e);
+        }
+    }
+
+    public Map<String, Object> getImage(String filename, Boolean fileExtension) {
+        File file = new File(UPLOAD_DIR + filename);
+        Map<String, Object> data = new HashMap<>();
+
+        if (!file.exists()) {
+            throw new ImageLoadException(filename + " does not exist");
+        }
+
+        try {
+            String mediaType = Files.probeContentType(file.toPath());
+            data.put("MediaType", mediaType);
+            byte[] imageData = Files.readAllBytes(file.toPath());
+            data.put("image", imageData);
+
+            if (fileExtension) {
+                String extension = getFileExtension(filename);
+                data.put("extension", extension);
+            }
+
+            return data;
+        } catch (IOException e) {
+            throw new ImageLoadException("Failed to load image data for " + filename, e);
+        }
+    }
+
+    private String getFileExtension(String filename) {
+        int lastIndex = filename.lastIndexOf('.');
+        return (lastIndex > 0) ? filename.substring(lastIndex + 1) : "";
     }
 }

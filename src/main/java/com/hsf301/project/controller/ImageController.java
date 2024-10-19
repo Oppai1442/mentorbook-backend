@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.io.IOException;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import com.hsf301.project.exception.FileUploadException;
 import com.hsf301.project.service.ImageService;
@@ -50,21 +51,11 @@ public class ImageController {
 
     @GetMapping("/uploads/{filename}")
     public ResponseEntity<Object> getImage(@PathVariable String filename) {
-        File file = new File(UPLOAD_DIR + filename);
-        System.out.println(UPLOAD_DIR + filename);
-        if (!file.exists()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found: " + filename);
-        }
+        Map<String, Object> data = imageService.getImage(filename, false);
 
-        try {
-            byte[] imageData = java.nio.file.Files.readAllBytes(file.toPath());
-            String contentType = Files.probeContentType(file.toPath());
-            return ResponseEntity.ok()
-                                .contentType(MediaType.parseMediaType(contentType))
-                                .body(imageData);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return ResponseEntity.ok()
+                                .contentType(MediaType.parseMediaType((String) data.get("MediaType")))
+                                .body(data.get("image"));
     }
 
 }
