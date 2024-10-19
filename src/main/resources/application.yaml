@@ -55,4 +55,6 @@ ImageController:
   saveLocation: C:\Users\daeor\Documents\Project\Image\
 
 Jwt:
-  token: ABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabc
+  expirationTime: 86400000 #(60*60*1000) * 24 (hiện tại là hết hạn sau 24h)
+  useCustomSecrectKey: true
+  secretKey: ABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabc

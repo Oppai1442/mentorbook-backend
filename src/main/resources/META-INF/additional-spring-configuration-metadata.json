@@ -13,5 +13,20 @@
     "name": "ImageController.maxSize",
     "type": "java.lang.String",
     "description": "A description for 'ImageController.maxSize'"
+  },
+  {
+    "name": "Jwt.secretKey",
+    "type": "java.lang.String",
+    "description": "A description for 'Jwt.secretKey'"
+  },
+  {
+    "name": "Jwt.useCustomSecrectKey",
+    "type": "java.lang.String",
+    "description": "A description for 'Jwt.useCustomSecrectKey'"
+  },
+  {
+    "name": "Jwt.expirationTime",
+    "type": "java.lang.String",
+    "description": "A description for 'Jwt.expirationTime'"
   }
 ]}
