@@ -1,13 +1,11 @@
 package com.hsf301.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.hsf301.project.model.ApiResponse;
 import com.hsf301.project.model.AuthResponse;
-import com.hsf301.project.model.ErrorResponse;
 import com.hsf301.project.model.LoginRequest;
 import com.hsf301.project.model.TokenRequest;
 import com.hsf301.project.model.user.SignupRequest;
@@ -47,11 +45,13 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
     }
 
+    @SuppressWarnings("rawtypes")
     @PostMapping("/login-token")
-    public String postMethodName(@Valid @RequestBody TokenRequest entity) {
+    public ResponseEntity loginWithToken(@Valid @RequestBody TokenRequest entity) {
         User user = userService.authenticated(entity.getToken());
         
-        return null;
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
     }
     
 
