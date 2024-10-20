@@ -2,14 +2,11 @@ package com.hsf301.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.io.IOException;
 
 import java.security.NoSuchAlgorithmException;
@@ -36,14 +33,14 @@ public class ImageController {
 
         StringBuilder responseMessage = new StringBuilder();
 
-        for (MultipartFile file : files) {
-            try {
-                String filePath = imageService.saveImage(file);
+        try {
+            String[] filePaths = imageService.saveImages(files);
+            for (String filePath : filePaths) {
                 responseMessage.append("File uploaded successfully: ").append(filePath).append("\n");
-            } catch (IOException | NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                responseMessage.append("Failed to upload file: ").append(file.getOriginalFilename()).append("\n");
             }
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            responseMessage.append("Failed to upload files.\n");
         }
 
         return ResponseEntity.ok(responseMessage.toString());
@@ -58,4 +55,12 @@ public class ImageController {
                                 .body(data.get("image"));
     }
 
+    @GetMapping("/id/{fileName:.+}")
+    public ResponseEntity<Object> getImageUrl(@PathVariable String fileName) {
+        Map<String, Object> data = imageService.getImage(fileName, false);
+
+        return ResponseEntity.ok()
+                                .contentType(MediaType.parseMediaType((String) data.get("MediaType")))
+                                .body(data.get("image"));
+    }
 }
