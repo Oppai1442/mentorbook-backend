@@ -14,13 +14,13 @@ public class UserResponse {
     private String fullName;
     private String email;
     private String role;
-    private byte[] avatar;
+    private String avatarUrl;
 
     public UserResponse(User user, ImageService imageService) {
         this.id = user.getUserId();
         this.fullName = user.getFullName();
         this.email = user.getEmail();
         this.role = user.getRole();
-        this.avatar = imageService.getImage(user.getAvatar());
+        this.avatarUrl = imageService.getImageUrl(user.getAvatar());
     }
 }
