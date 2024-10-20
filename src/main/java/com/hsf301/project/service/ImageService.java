@@ -3,10 +3,10 @@ package com.hsf301.project.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.hsf301.project.exception.FileUploadException;
 import com.hsf301.project.exception.ImageLoadException;
-import com.hsf301.project.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,19 +14,27 @@ import java.nio.file.Files;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.UUID;
 
 
 import java.security.NoSuchAlgorithmException;
 
 @Service
 public class ImageService {
-
-    private final Utils utils = new Utils();
-
     @Value("${ImageController.saveLocation}")
     private String UPLOAD_DIR;
 
-    public String saveImage(MultipartFile file) throws IOException, NoSuchAlgorithmException {
+    public String[] saveImages(MultipartFile[] files) throws IOException, NoSuchAlgorithmException {
+        String[] filePaths = new String[files.length];
+
+        for (int i = 0; i < files.length; i++) {
+            filePaths[i] = saveImage(files[i]);
+        }
+
+        return filePaths;
+    }
+
+    private String saveImage(MultipartFile file) throws IOException, NoSuchAlgorithmException {
         String originalFilename = file.getOriginalFilename();
 
         if (originalFilename == null || originalFilename.isEmpty()) {
@@ -40,10 +48,8 @@ public class ImageService {
         }
 
         String baseName = originalFilename.substring(0, lastDotIndex >= 0 ? lastDotIndex : originalFilename.length());
-        long currentTime = System.currentTimeMillis();
 
-        String hash = utils.hashGenerate(baseName + currentTime);
-        String newFileName = hash + currentTime + "_@" + baseName + extension;
+        String newFileName = UUID.randomUUID().toString() + "@" + baseName + extension;
 
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
@@ -66,6 +72,13 @@ public class ImageService {
         } catch (IOException e) {
             throw new ImageLoadException("Failed to load image data for " + filename, e);
         }
+    }
+
+    public String getImageUrl(String image) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/images/id/")
+                .path(image)
+                .toUriString();
     }
 
     public Map<String, Object> getImage(String filename, Boolean fileExtension) {
