@@ -18,19 +18,20 @@ public class MentorBooking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_id")
     private Integer bookingId;
 
     @ManyToOne
-    @JoinColumn(name = "mentorId", referencedColumnName = "userId")
+    @JoinColumn(name = "mentor_id", referencedColumnName = "user_id")
     private User mentor;
 
     @ManyToOne
-    @JoinColumn(name = "studentId", referencedColumnName = "userId")
+    @JoinColumn(name = "customer_id", referencedColumnName = "user_id")
     private User student;
 
-    @Column(nullable = false)
+    @Column(name="booking_date", nullable = false)
     private LocalDateTime bookingDate = LocalDateTime.now();
 
-    @Column(nullable = false, length = 20)
+    @Column(name="status", nullable = false, length = 20)
     private String status;
 }

@@ -16,13 +16,13 @@ public class MentorPrice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer priceId;
+    @Column(name = "price_id")
+    private Integer PriceID;
 
     @ManyToOne
-    @JoinColumn(name = "mentorId", referencedColumnName = "userId")
+    @JoinColumn(name = "mentor_id", referencedColumnName = "user_id")
     private User mentor;
 
-    @Column(nullable = false)
+    @Column(name = "price_per_hour", nullable = false)
     private Double pricePerHour;
 }
-

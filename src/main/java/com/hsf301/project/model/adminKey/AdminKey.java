@@ -18,18 +18,19 @@ public class AdminKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "key_id")
     private Integer keyId;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name="key_value", nullable = false, unique = true, length = 100)
     private String keyValue;
 
-    @Column(nullable = false)
+    @Column(name="isused", nullable = false)
     private Boolean isUsed = false;
 
     @ManyToOne
-    @JoinColumn(name = "createdBy", referencedColumnName = "userId")
+    @JoinColumn(name = "created_by", referencedColumnName = "user_id")
     private User createdBy;
 
-    @Column(nullable = false)
+    @Column(name="created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 }

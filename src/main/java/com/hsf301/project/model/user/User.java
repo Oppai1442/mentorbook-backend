@@ -16,26 +16,30 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 15)
+    @Column(name = "phone", length = 15)
     private String phone;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "role", nullable = false, length = 20)
     private String role;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
-
-    @Column(length = 255)
+    @Column(name = "avatar", length = 255)
     private String avatar = "avatar.png";
+
+    @Column(name = "background", length = 255)
+    private String background = "background.png";
+
+    @Column(name = "created_date", nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 }

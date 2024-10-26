@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 public class SkillCatalogue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int skillID;  // renamed to camel case
+    @Column(name = "skill_id")
+    private int skillID;
 
-    @Column(length = 255)
+    @Column(name = "skill_name", length = 255)
     private String skillName;
 
-    @Column(length = 255)
-    private String description;
+    @Column(name = "skill_description", length = 255)
+    private String skillDescription;
 }

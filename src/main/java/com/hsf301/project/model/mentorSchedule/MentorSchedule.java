@@ -18,15 +18,16 @@ public class MentorSchedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "schedule_id")
     private Integer scheduleId;
 
     @ManyToOne
-    @JoinColumn(name = "mentorId", referencedColumnName = "userId")
+    @JoinColumn(name = "mentor_id", referencedColumnName = "user_id")
     private User mentor;
 
-    @Column(nullable = false)
+    @Column(name = "available_from", nullable = false)
     private LocalDateTime availableFrom;
 
-    @Column(nullable = false)
+    @Column(name = "available_to", nullable = false)
     private LocalDateTime availableTo;
 }

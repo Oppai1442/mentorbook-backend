@@ -18,19 +18,20 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "report_id")
     private Integer reportId;
 
     @ManyToOne
-    @JoinColumn(name = "reporterId", referencedColumnName = "userId")
+    @JoinColumn(name = "reporter_id", referencedColumnName = "user_id")
     private User reporter;
 
     @ManyToOne
-    @JoinColumn(name = "reportedUserId", referencedColumnName = "userId")
+    @JoinColumn(name = "reported_user_id", referencedColumnName = "user_id")
     private User reportedUser;
 
-    @Column(length = 255)
+    @Column(name = "reason", length = 255)
     private String reason;
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 }

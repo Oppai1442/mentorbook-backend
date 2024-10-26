@@ -19,18 +19,19 @@ public class Notification {
 
     @Id
     @GeneratedValue
+    @Column(name = "notification_id")
     private UUID notificationId = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(length = 255)
+    @Column(name = "message", length = 255)
     private String message;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private Boolean isRead = false;
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 }

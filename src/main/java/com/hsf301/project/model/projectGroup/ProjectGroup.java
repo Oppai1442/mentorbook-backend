@@ -18,15 +18,16 @@ public class ProjectGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "group_id")
     private Integer groupId;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "group_name", nullable = false, length = 100)
     private String groupName;
 
     @ManyToOne
-    @JoinColumn(name = "createdBy", referencedColumnName = "userId")
+    @JoinColumn(name = "create_by", referencedColumnName = "user_id")
     private User createdBy;
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 }

@@ -16,15 +16,16 @@ public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "feedback_id")
     private Integer feedbackId;
 
     @ManyToOne
-    @JoinColumn(name = "bookingId", referencedColumnName = "bookingId")
+    @JoinColumn(name = "booking_id", referencedColumnName = "booking_id")
     private MentorBooking booking;
 
-    @Column(nullable = false)
+    @Column(name="rating",nullable = false)
     private Integer rating;
 
-    @Column(length = 500)
+    @Column(name="comment",length = 500)
     private String comment;
 }

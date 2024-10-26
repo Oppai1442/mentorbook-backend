@@ -16,19 +16,24 @@ public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "coupon_id")
     private Integer couponId;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name="code",nullable = false, unique = true, length = 50)
     private String code;
 
+    @Column(name = "available_date", nullable = false)
     private LocalDateTime availableDate;
+    
+    @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
 
-    @Column(nullable = false)
+    @Column(name="usage_count",nullable = false)
     private Integer usageCount = 0;
 
+    @Column(name="max_usage",nullable = false)
     private Integer maxUsage;
 
-    @Column(length = Integer.MAX_VALUE)
+    @Column(name="user_used",length = Integer.MAX_VALUE)
     private String usersUsed;
 }

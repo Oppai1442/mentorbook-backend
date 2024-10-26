@@ -20,17 +20,17 @@ public class GroupMember {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "groupId", referencedColumnName = "groupId")
+    @JoinColumn(name = "group_id", referencedColumnName = "group_id")
     private ProjectGroup group;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(length = 50)
+    @Column(name = "role_in_group", length = 50)
     private String roleInGroup;
 
-    @Column(nullable = false)
+    @Column(name = "joined_date", nullable = false)
     private LocalDateTime joinedDate = LocalDateTime.now();
 }

@@ -16,12 +16,13 @@ public class MentorSkill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mentor_skill_id")
     private Integer mentorSkillId;
 
     @ManyToOne
-    @JoinColumn(name = "mentorId", referencedColumnName = "userId")
+    @JoinColumn(name = "mentor_id", referencedColumnName = "user_id")
     private User mentor;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "skills", nullable = false, length = 100)
     private String skills;
 }

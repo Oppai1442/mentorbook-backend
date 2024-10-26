@@ -18,15 +18,16 @@ public class Wallet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "wallet_id")
     private Integer walletId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "balance", nullable = false)
     private Double balance = 0.0;
 
-    @Column(nullable = false)
+    @Column(name = "last_update", nullable = false)
     private LocalDateTime lastUpdated = LocalDateTime.now();
 }

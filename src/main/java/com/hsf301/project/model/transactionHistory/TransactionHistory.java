@@ -18,23 +18,25 @@ public class TransactionHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
     private Integer transactionId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "transaction_type", nullable = false, length = 20)
     private String transactionType;
 
-    @Column(nullable = false)
+    @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Column(length = 50)
+    @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    @Column(name = "completion_time")
     private LocalDateTime completionTime;
 }
