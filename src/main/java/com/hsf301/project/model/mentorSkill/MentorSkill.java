@@ -23,5 +23,5 @@ public class MentorSkill {
     private User mentor;
 
     @Column(nullable = false, length = 100)
-    private String skillName;
+    private String skills;
 }
