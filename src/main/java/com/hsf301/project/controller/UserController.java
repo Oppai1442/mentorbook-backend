@@ -2,26 +2,19 @@ package com.hsf301.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.hsf301.project.model.ApiResponse;
-import com.hsf301.project.model.AuthResponse;
-import com.hsf301.project.model.LoginRequest;
-import com.hsf301.project.model.TokenRequest;
-import com.hsf301.project.model.user.SignupRequest;
-import com.hsf301.project.model.user.User;
-import com.hsf301.project.model.user.UserResponse;
-import com.hsf301.project.service.ImageService;
-import com.hsf301.project.service.JwtService;
+import com.hsf301.project.model.request.LoginRequest;
+import com.hsf301.project.model.request.SignupRequest;
+import com.hsf301.project.model.request.TokenRequest;
+import com.hsf301.project.model.response.ApiResponse;
+import com.hsf301.project.model.response.AuthResponse;
 import com.hsf301.project.service.UserService;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
-
-
 
 @RestController
 @RequestMapping("/user")
@@ -30,38 +23,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private ImageService imageService;
-
-    @SuppressWarnings("rawtypes")
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
-        User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-       
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+        AuthResponse authResponse = userService.authenticate(loginRequest);
+
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
     }
 
-    @SuppressWarnings("rawtypes")
     @PostMapping("/login-token")
-    public ResponseEntity loginWithToken(@Valid @RequestBody TokenRequest entity) {
-        User user = userService.authenticated(entity.getToken());
-        
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
-    }
-    
+    public ResponseEntity<ApiResponse<AuthResponse>> loginWithToken(@Valid @RequestBody TokenRequest tokenRequest) {
+        AuthResponse authResponse = userService.authenticate(tokenRequest);
 
-    @SuppressWarnings("rawtypes")
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
+    }
+
     @PostMapping("/register")
-    public ResponseEntity register(@Valid @RequestBody SignupRequest signupRequest) {
-        User user = userService.register(signupRequest);
-        String token = jwtService.generateToken(user);
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody SignupRequest signupRequest) {
+        AuthResponse authResponse = userService.register(signupRequest);
 
-        return ResponseEntity.ok(new ApiResponse<AuthResponse>(new AuthResponse(token, new UserResponse(user, imageService))));
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
     }
-
 }
