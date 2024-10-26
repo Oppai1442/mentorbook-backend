@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hsf301.project.model.ApiResponse;
-import com.hsf301.project.model.ErrorResponse;
-import com.hsf301.project.model.TokenResponse;
+import com.hsf301.project.model.request.TokenResponse;
+import com.hsf301.project.model.response.ApiResponse;
+import com.hsf301.project.model.response.ErrorResponse;
 
 import org.springframework.security.web.csrf.CsrfToken;
 

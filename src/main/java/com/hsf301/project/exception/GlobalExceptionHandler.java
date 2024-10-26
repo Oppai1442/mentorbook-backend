@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.hsf301.project.model.ErrorResponse;
+import com.hsf301.project.model.response.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.Map;
