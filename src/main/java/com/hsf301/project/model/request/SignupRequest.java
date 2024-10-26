@@ -1,4 +1,4 @@
-package com.hsf301.project.model.user;
+package com.hsf301.project.model.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class SignupRequest {
     private String address;
 
     @NotNull(message = "Phone number is required")
-    private String phone;
+    private String phoneNumber;
 
     @NotNull(message = "Email is required")
     private String email;
