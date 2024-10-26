@@ -1,4 +1,4 @@
-package com.hsf301.project.model;
+package com.hsf301.project.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

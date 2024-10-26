@@ -1,4 +1,4 @@
-package com.hsf301.project.model;
+package com.hsf301.project.model.response;
 
 import java.util.ArrayList;
 import java.util.List;

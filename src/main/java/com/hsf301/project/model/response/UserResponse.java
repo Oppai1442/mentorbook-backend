@@ -1,9 +1,10 @@
-package com.hsf301.project.model.user;
+package com.hsf301.project.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.hsf301.project.model.user.User;
 import com.hsf301.project.service.ImageService;
 
 @Data
