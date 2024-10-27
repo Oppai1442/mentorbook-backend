@@ -15,8 +15,11 @@ import com.hsf301.project.repository.WalletRepository;
 import io.jsonwebtoken.Claims;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -100,5 +103,13 @@ public class UserService {
         AuthResponse authResponse = new AuthResponse(newToken, userResponse);
 
         return authResponse;
+    }
+
+    public List<User> findByRole(String role) {
+        return userRepository.findByRole(role);
+    }
+
+    public Page<User> findByFullNameContainingIgnoreCase(String filter, Pageable pageable) {
+        return userRepository.findByFullNameContainingIgnoreCase(filter, pageable);
     }
 }
