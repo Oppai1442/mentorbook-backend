@@ -1,4 +1,4 @@
-package com.hsf301.project.model.skillCatalogue;
+package com.hsf301.project.model.skills;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "SkillCatalogue")
+@Table(name = "Skills")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SkillCatalogue {
+public class Skills {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id")
