@@ -27,7 +27,7 @@ public class MentorBooking {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "user_id")
-    private User student;
+    private User user;
 
     @Column(name="booking_date", nullable = false)
     private LocalDateTime bookingDate = LocalDateTime.now();
