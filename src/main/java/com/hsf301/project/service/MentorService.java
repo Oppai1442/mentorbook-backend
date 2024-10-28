@@ -1,77 +1,183 @@
 package com.hsf301.project.service;
 
-import com.hsf301.project.model.mentorSkill.MentorSkill;
+import com.hsf301.project.model.dto.Price;
+import com.hsf301.project.model.dto.Sorting;
+import com.hsf301.project.model.feedback.Feedback;
+import com.hsf301.project.model.mentorBooking.MentorBooking;
+import com.hsf301.project.model.mentorData.MentorData;
+import com.hsf301.project.model.request.MentorRequest;
 import com.hsf301.project.model.response.MentorResponse;
-import com.hsf301.project.model.skillCatalogue.SkillCatalogue;
+import com.hsf301.project.model.skills.Skills;
 import com.hsf301.project.model.user.User;
-import com.hsf301.project.repository.MentorSkillRepository;
-import com.hsf301.project.repository.SkillCatalogueRepository;
-import com.hsf301.project.repository.UserRepository;
+import com.hsf301.project.utils.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors; // Import cho Collectors
 
 @Service
 public class MentorService {
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    private SkillsService skillsService;
 
     @Autowired
-    private SkillCatalogueRepository skillCatalogueRepository;
+    private MentorDataService mentorDataService;
 
     @Autowired
-    private MentorSkillRepository mentorSkillRepository;
+    private MentorBookingService mentorBookingService;
 
-   
+    @Autowired
+    private FeedbackService feedbackService;
+
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private Utils utils;
+
     public List<MentorResponse> getAllMentors() {
-        // Lấy danh sách mentor từ repository
-        List<User> mentors = userRepository.findByRole("mentor");
-    
-        // Tạo danh sách để chứa phản hồi
+        List<User> mentors = userService.findByRole("mentor");
         List<MentorResponse> mentorResponses = new ArrayList<>();
-    
-        // Lấy tất cả kỹ năng từ SkillCatalogue vào một bản đồ để dễ dàng truy cập
-        Map<Integer, SkillCatalogue> skillCatalogueMap = skillCatalogueRepository.findAll().stream()
-                .collect(Collectors.toMap(
-                        SkillCatalogue::getSkillID, // Khóa là ID kỹ năng
-                        skill -> skill, // Giá trị là đối tượng SkillCatalogue
-                        (existing, replacement) -> existing // Nếu có trùng lặp, giữ lại giá trị cũ
-                ));
-    
-        // Duyệt qua từng mentor
+
+        Map<Integer, Skills> skillCatalogueMap = skillsService.getSkillsMap();
+
         for (User mentor : mentors) {
             MentorResponse response = new MentorResponse();
-            response.setUserId(mentor.getUserId());
-            response.setFullName(mentor.getFullName());
-            response.setEmail(mentor.getEmail());
-    
-            // Lấy tất cả kỹ năng của mentor từ mentorSkillRepository
-            List<MentorSkill> mentorSkills = mentorSkillRepository.findByMentor_UserId(mentor.getUserId());
-            
-            // Lấy danh sách kỹ năng từ mentorSkills và ánh xạ đến SkillCatalogue
-            List<SkillCatalogue> skills = new ArrayList<>();
-            for (MentorSkill mentorSkill : mentorSkills) {
-                // Giả sử mentorSkill.getSkills() trả về danh sách ID kỹ năng
-                List<String> skillIds = Arrays.asList(mentorSkill.getSkills()); // Chuyển đổi nếu cần
-    
-                for (String skillId : skillIds) {
-                    SkillCatalogue skillCatalogue = skillCatalogueMap.get(skillId); // Tìm theo ID
-                    if (skillCatalogue != null) {
-                        skills.add(skillCatalogue); // Thêm kỹ năng vào danh sách
+
+            List<MentorBooking> totalBooked = mentorBookingService.getAllBookingsByStatus(mentor, "done");
+            Double totalRating = 0.0;
+            for (MentorBooking booking : totalBooked) {
+                List<Feedback> feedback = feedbackService.findByBooking(booking);
+                for (Feedback feedbackItem : feedback) {
+                    totalRating += feedbackItem.getRating();
+                }
+            }
+
+            // Bắt đầu:set skill
+            List<MentorData> mentorSkills = mentorDataService.getMentorById(mentor);
+            List<Skills> skills = new ArrayList<>();
+
+            for (MentorData mentorSkill : mentorSkills) {
+                List<Object> skillIds = new ArrayList<>();
+
+                try {
+                    skillIds = utils.convertStringToJsonArray(mentorSkill.getMentorSkills());
+                } catch (Exception e) {
+                    System.err.println("Error converting skills: " + e.getMessage());
+                }
+
+                for (Object skillId : skillIds) {
+                    if (skillId instanceof Number) {
+                        Integer id = ((Number) skillId).intValue();
+                        Skills skillCatalogue = skillCatalogueMap.get(id);
+                        if (skillCatalogue != null) {
+                            skills.add(skillCatalogue);
+                        } else {
+                            System.out.println("Skill not found for ID: " + id);
+                        }
+                    } else {
+                        System.out.println("Invalid skill ID type: " + skillId.getClass().getSimpleName());
                     }
                 }
             }
-    
-            response.setSkills(skills); // Gán danh sách kỹ năng cho phản hồi
-            mentorResponses.add(response); // Thêm phản hồi vào danh sách
+
+            // Kết thúc: set skill
+
+            response.setUserId(mentor.getUserId());
+            response.setFullName(mentor.getFullName());
+            response.setEmail(mentor.getEmail());
+            response.setAvatarUrl(imageService.getImageUrl(mentor.getAvatar()));
+            response.setBackgroundUrl(imageService.getImageUrl(mentor.getBackground()));
+            response.setSkills(skills);
+            response.setTotalBooked(totalBooked.size());
+            if (!totalBooked.isEmpty()) {
+                response.setMentorRating(totalRating / totalBooked.size());
+            } else {
+                response.setMentorRating(0.0); // Nếu không có booking nào, có thể đặt rating là 0
+            }
+
+            mentorResponses.add(response);
         }
-    
-        return mentorResponses; // Trả về danh sách MentorResponse
+
+        return mentorResponses;
+    }
+
+    // public List<MentorResponse> getMentors(Integer page, String sort, String
+    // filter) {
+    public List<MentorResponse> getMentors(MentorRequest data) {
+        List<User> mentors = userService.findByRole("mentor");
+        List<MentorResponse> mentorResponses = new ArrayList<>();
+
+        Map<Integer, Skills> skillCatalogueMap = skillsService.getSkillsMap();
+
+        for (User mentor : mentors) {
+            MentorResponse response = new MentorResponse();
+
+            List<MentorBooking> totalBooked = mentorBookingService.getAllBookingsByStatus(mentor, "done");
+            Double totalRating = 0.0;
+            for (MentorBooking booking : totalBooked) {
+                List<Feedback> feedback = feedbackService.findByBooking(booking);
+                for (Feedback feedbackItem : feedback) {
+                    totalRating += feedbackItem.getRating();
+                }
+            }
+
+            // Bắt đầu:set skill
+            List<MentorData> mentorSkills = mentorDataService.getMentorById(mentor);
+            List<Skills> skills = new ArrayList<>();
+
+            for (MentorData mentorSkill : mentorSkills) {
+                List<Object> skillIds = new ArrayList<>();
+
+                try {
+                    skillIds = utils.convertStringToJsonArray(mentorSkill.getMentorSkills());
+                } catch (Exception e) {
+                    System.err.println("Error converting skills: " + e.getMessage());
+                }
+
+                for (Object skillId : skillIds) {
+                    if (skillId instanceof Number) {
+                        Integer id = ((Number) skillId).intValue();
+                        Skills skillCatalogue = skillCatalogueMap.get(id);
+                        if (skillCatalogue != null) {
+                            skills.add(skillCatalogue);
+                        } else {
+                            System.out.println("Skill not found for ID: " + id);
+                        }
+                    } else {
+                        System.out.println("Invalid skill ID type: " + skillId.getClass().getSimpleName());
+                    }
+                }
+            }
+
+            // Kết thúc: set skill
+
+            response.setUserId(mentor.getUserId());
+            response.setFullName(mentor.getFullName());
+            response.setEmail(mentor.getEmail());
+            response.setAvatarUrl(imageService.getImageUrl(mentor.getAvatar()));
+            response.setBackgroundUrl(imageService.getImageUrl(mentor.getBackground()));
+            response.setSkills(skills);
+            response.setTotalBooked(totalBooked.size());
+            if (!totalBooked.isEmpty()) {
+                response.setMentorRating(totalRating / totalBooked.size());
+            } else {
+                response.setMentorRating(0.0); // Nếu không có booking nào, có thể đặt rating là 0
+            }
+
+            mentorResponses.add(response);
+        }
+
+        return mentorResponses;
     }
 }
