@@ -16,5 +16,5 @@ public class MentorDataService {
 
     public List<MentorData> getMentorById(User mentor) {
         return mentorSkillRepository.findByMentor(mentor);
-    }
+    } 
 }
