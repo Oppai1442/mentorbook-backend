@@ -2,8 +2,7 @@ package com.hsf301.project.model.response;
 
 import java.util.List;
 
-import com.hsf301.project.model.skillCatalogue.SkillCatalogue;
-import com.hsf301.project.model.user.User;
+import com.hsf301.project.model.skills.Skills;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,5 +15,10 @@ public class MentorResponse {
     private Integer userId;
     private String fullName;
     private String email;
-    private List<SkillCatalogue> skills;
+    private String avatarUrl;
+    private String backgroundUrl;
+    private List<Skills> skills;
+    private Double mentorPrice;
+    private Double mentorRating;
+    private Integer totalBooked;
 }
