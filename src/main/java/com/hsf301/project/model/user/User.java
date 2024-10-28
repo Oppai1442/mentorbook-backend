@@ -32,7 +32,7 @@ public class User {
     private String phone;
 
     @Column(name = "role", nullable = false, length = 20)
-    private String role;
+    private String role = "user";
 
     @Column(name = "avatar", length = 255)
     private String avatar = "avatar.png";
@@ -42,4 +42,13 @@ public class User {
 
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
+
+    @Column(name = "last_activity", nullable = false)
+    private LocalDateTime lastActivity = LocalDateTime.now();
+
+    @Column(name = "status", nullable = false)
+    private String status = "active";
+
+    @Column(name = "verified", nullable = false)
+    private Integer verified = 0;
 }
