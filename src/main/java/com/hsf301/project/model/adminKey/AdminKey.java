@@ -24,7 +24,7 @@ public class AdminKey {
     @Column(name="key_value", nullable = false, unique = true, length = 100)
     private String keyValue;
 
-    @Column(name="isused", nullable = false)
+    @Column(name="is_used", nullable = false)
     private Boolean isUsed = false;
 
     @ManyToOne
