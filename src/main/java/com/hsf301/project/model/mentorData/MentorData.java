@@ -28,4 +28,10 @@ public class MentorData {
 
     @Column(name = "mentor_experience", nullable = false, length = 100)
     private String mentorExperience;
+
+    @Column(name = "mentor_description", nullable = false, length = 100)
+    private String mentorDescription;
+    
+    @Column(name = "mentor_rating", nullable = false, length = 1)
+    private Integer mentorRating;
 }
