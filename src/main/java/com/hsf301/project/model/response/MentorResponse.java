@@ -12,13 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MentorResponse {
-    private Integer userId;
-    private String fullName;
-    private String email;
-    private String avatarUrl;
-    private String backgroundUrl;
-    private List<Skills> skills;
-    private Double mentorPrice;
-    private Double mentorRating;
-    private Integer totalBooked;
+    private Integer userId; //
+    private String fullName; //
+    private String email; //
+    private String avatarUrl; //
+    private String backgroundUrl; //
+    private List<Skills> skills; //
+    private Double price; //
+    private Double rating; //
+    private Integer totalBooked; //
+    private String role;
 }
