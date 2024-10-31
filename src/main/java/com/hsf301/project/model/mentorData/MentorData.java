@@ -24,14 +24,17 @@ public class MentorData {
     private User mentor;
 
     @Column(name = "mentor_skills", nullable = false, length = 100)
-    private String mentorSkills;
+    private String mentorSkills = "[]";
 
     @Column(name = "mentor_experience", nullable = false, length = 100)
-    private String mentorExperience;
+    private Integer mentorExperience = 0;
 
-    @Column(name = "mentor_description", nullable = false, length = 100)
-    private String mentorDescription;
+    @Column(name = "mentor_role", nullable = false, length = 100)
+    private String mentorRole = "";
     
     @Column(name = "mentor_rating", nullable = false, length = 1)
-    private Integer mentorRating;
+    private Double mentorRating = 0.0;
+    
+    @Column(name = "mentor_price_per_hour", nullable = false)
+    private Double mentorPrice = 0.0;
 }
