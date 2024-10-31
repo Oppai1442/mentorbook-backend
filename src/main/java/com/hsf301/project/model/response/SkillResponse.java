@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SkillResponse {
-    private Integer skillId;
-    private String skillName;
-    private String skillDescription;
+    private Integer id;
+    private String name;
+    private String description;
 }
