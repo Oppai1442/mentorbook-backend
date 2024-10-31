@@ -11,7 +11,7 @@ import com.hsf301.project.model.user.User;
 
 @Repository
 public interface MentorDataRepository extends JpaRepository<MentorData, Integer> {
-    List<MentorData> findByMentor(User mentor);
+    MentorData findByMentor(User mentor);
     
     // Tìm tất cả kỹ năng của một mentor theo mentorId
     List<MentorData> findByMentor_UserId(Integer mentorId);
