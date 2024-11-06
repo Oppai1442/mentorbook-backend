@@ -15,9 +15,6 @@ public class SignupRequest {
     @NotNull(message = "Birth date is required")
     private String birthDate;
 
-    @NotNull(message = "Address is required")
-    private String address;
-
     @NotNull(message = "Phone number is required")
     private String phoneNumber;
 
@@ -26,4 +23,7 @@ public class SignupRequest {
 
     @NotNull(message = "Password is required")
     private String password;
+
+    @NotNull(message = "Gender is required")
+    private String gender;
 }
