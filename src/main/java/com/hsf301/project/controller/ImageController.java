@@ -2,7 +2,7 @@ package com.hsf301.project.controller;
 
 import com.hsf301.project.exception.FileUploadException;
 import com.hsf301.project.model.response.ApiResponse;
-import com.hsf301.project.model.response.ImageUrl;
+import com.hsf301.project.model.response.ImageUrlResponse;
 import com.hsf301.project.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +22,15 @@ public class ImageController {
 
     // Xử lý upload một ảnh duy nhất
     @PostMapping("/upload")
-    public ResponseEntity<ApiResponse<ImageUrl>> uploadSingleImage(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<ApiResponse<ImageUrlResponse>> uploadSingleImage(@RequestParam("image") MultipartFile file) {
         if (file.isEmpty()) {
             throw new FileUploadException("No file uploaded.");
         }
     
         try {
             String imageUrl = imageService.saveSingleImageAndGetUrl(file);
-            ImageUrl imageUrlResponse = new ImageUrl(imageUrl);
-            return ResponseEntity.ok(new ApiResponse<ImageUrl>(imageUrlResponse));
+            ImageUrlResponse imageUrlResponse = new ImageUrlResponse(imageUrl);
+            return ResponseEntity.ok(new ApiResponse<ImageUrlResponse>(imageUrlResponse));
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new ApiResponse<>(null));
