@@ -2,6 +2,7 @@ package com.hsf301.project.model.response;
 
 import java.util.List;
 
+import com.hsf301.project.model.dto.MentorAvailability;
 import com.hsf301.project.model.skills.Skills;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +22,8 @@ public class MentorResponse {
     private Double price; //
     private Double rating; //
     private Integer totalBooked; //
-    private String role;
+    private Integer experience;
+    private String role; //
+    private String description; //
+    private List<MentorAvailability> availableTime; //
 }
