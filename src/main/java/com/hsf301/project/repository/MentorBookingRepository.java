@@ -13,4 +13,6 @@ import com.hsf301.project.model.user.User;
 public interface MentorBookingRepository extends JpaRepository<MentorBooking, Integer> {
     List<MentorBooking> findByMentor_UserIdAndStatus(Integer mentorId, String status);
     List<MentorBooking> findByUserAndStatus(User user, String status);
+    MentorBooking findByBookingId(Long bookingId);
+    List<MentorBooking> findByMentor_UserId(Integer mentorId);
 }
