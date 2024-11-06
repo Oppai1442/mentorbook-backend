@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Sorting {
-    private String name;
+    private String bookings;
     private String experience;
     private String rating;
     private String price;
