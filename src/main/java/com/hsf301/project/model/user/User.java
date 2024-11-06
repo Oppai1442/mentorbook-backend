@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -29,7 +30,7 @@ public class User {
     private String email;
 
     @Column(name = "phone", length = 15)
-    private String phone;
+    private String phoneNumber;
 
     @Column(name = "role", nullable = false, length = 20)
     private String role = "user";
@@ -46,9 +47,15 @@ public class User {
     @Column(name = "last_activity", nullable = false)
     private LocalDateTime lastActivity = LocalDateTime.now();
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", length = 20, nullable = false)
     private String status = "active";
 
     @Column(name = "verified", nullable = false)
-    private Integer verified = 0;
+    private Boolean verified = false;
+
+    @Column(name = "birthdate")
+    private LocalDate birthDate;
+
+    @Column(name = "gender")
+    private String gender;
 }
