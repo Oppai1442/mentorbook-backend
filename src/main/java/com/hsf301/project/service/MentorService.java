@@ -9,6 +9,9 @@ import java.util.stream.Collectors; // Import cho Collectors
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hsf301.project.model.dto.MentorAvailability;
 import com.hsf301.project.model.mentorBooking.MentorBooking;
 import com.hsf301.project.model.mentorData.MentorData;
 import com.hsf301.project.model.request.MentorRequest;
@@ -120,9 +123,7 @@ public class MentorService {
 
         // Lấy danh sách kỹ năng từ skillsService
         Map<Integer, Skills> skillCatalogueMap = skillsService.getSkillsMap();
-
-
-
+        ObjectMapper objectMapper = new ObjectMapper();
 
         for (User mentor : mentors) {
             MentorResponse response = new MentorResponse();
@@ -133,17 +134,10 @@ public class MentorService {
             // Lấy danh sách booking đã hoàn tất
             List<MentorBooking> mentorTotalBooked = mentorBookingService.getAllBookingsByStatus(mentor, "done");
 
-            // Lấy rating
+            // Lấy rating và các thông tin khác
             Double mentorRating = mentorData.getMentorRating();
-
-            // Lấy Price
             Double mentorPrice = mentorData.getMentorPrice();
-
-            
-            // Lấy vị trí công việc hiện tại
             String mentorRole = mentorData.getMentorRole();
-
-            // Lấy skill của mentor
             String mentorSkillsData = mentorData.getMentorSkills();
             List<Object> skillIds = utils.convertStringToJsonArray(mentorSkillsData);
             List<Skills> mentorSkills = new ArrayList<>();
@@ -163,6 +157,17 @@ public class MentorService {
                 }
             }
 
+            // Xử lý dữ liệu availableTime từ JSON String
+            String availableTimeJson = mentorData.getMentorAvailableTime();
+            List<MentorAvailability> availableTimeList = new ArrayList<>();
+            try {
+                availableTimeList = objectMapper.readValue(
+                        availableTimeJson,
+                        objectMapper.getTypeFactory().constructCollectionType(List.class, MentorAvailability.class));
+            } catch (JsonProcessingException e) {
+                System.err.println("Failed to parse available time JSON: " + e.getMessage());
+            }
+
             // Thiết lập thông tin cho MentorResponse
             response.setUserId(mentor.getUserId());
             response.setFullName(mentor.getFullName());
@@ -174,6 +179,9 @@ public class MentorService {
             response.setRating(mentorRating);
             response.setPrice(mentorPrice);
             response.setRole(mentorRole);
+            response.setExperience(mentorData.getMentorExperience());
+            response.setDescription(mentorData.getMentorDescription());
+            response.setAvailableTime(availableTimeList);
 
             mentorResponses.add(response);
         }
@@ -189,7 +197,6 @@ public class MentorService {
                         break;
                     }
                 }
-                System.out.println("\n"+x.getSkills()+"\n");
             }
             mentorResponses = t;
         }
@@ -212,17 +219,39 @@ public class MentorService {
 
         // Sắp xếp kết quả dựa trên yêu cầu
         if (data.getSorting() != null) {
-            if ("asc".equals(data.getSorting().getName())) {
-                mentorResponses.sort(Comparator.comparing(MentorResponse::getFullName));
-            } else if ("desc".equals(data.getSorting().getName())) {
-                mentorResponses.sort(Comparator.comparing(MentorResponse::getFullName).reversed());
+            Comparator<MentorResponse> comparator = null;
+
+            // Sắp xếp theo total booked
+            if ("asc".equals(data.getSorting().getBookings())) {
+                comparator = Comparator.comparing(MentorResponse::getTotalBooked);
+            } else if ("desc".equals(data.getSorting().getBookings())) {
+                comparator = Comparator.comparing(MentorResponse::getTotalBooked).reversed();
+            }
+
+            // Sắp xếp theo experience
+            if ("asc".equals(data.getSorting().getExperience())) {
+                comparator = Comparator.comparing(MentorResponse::getExperience);
+            } else if ("desc".equals(data.getSorting().getExperience())) {
+                comparator = Comparator.comparing(MentorResponse::getExperience).reversed();
             }
 
             // Sắp xếp theo rating
             if ("asc".equals(data.getSorting().getRating())) {
-                mentorResponses.sort(Comparator.comparing(MentorResponse::getRating));
+                comparator = Comparator.comparing(MentorResponse::getRating);
             } else if ("desc".equals(data.getSorting().getRating())) {
-                mentorResponses.sort(Comparator.comparing(MentorResponse::getRating).reversed());
+                comparator = Comparator.comparing(MentorResponse::getRating).reversed();
+            }
+
+            // Sắp xếp theo price
+            if ("asc".equals(data.getSorting().getPrice())) {
+                comparator = Comparator.comparing(MentorResponse::getPrice);
+            } else if ("desc".equals(data.getSorting().getPrice())) {
+                comparator = Comparator.comparing(MentorResponse::getPrice).reversed();
+            }
+
+            // Thực hiện sắp xếp nếu có comparator
+            if (comparator != null) {
+                mentorResponses.sort(comparator);
             }
         }
 
@@ -236,4 +265,13 @@ public class MentorService {
 
         return new MentorResponseList(mentorResponses.subList(fromIndex, toIndex), totalFound);
     }
+
+    // public MentorDetails getMentorData(String mentorId) {
+    // User mentor = userService.findById(mentorId)
+    // .orElseThrow(() -> new RuntimeException("Mentor not found"));
+
+    // // Chuyển đổi Mentor sang MentorDetails (hoặc tạo từ trực tiếp từ mentor nếu
+    // có)
+    // return new MentorDetails(mentor);
+    // }
 }
