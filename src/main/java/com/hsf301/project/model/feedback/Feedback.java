@@ -1,5 +1,7 @@
 package com.hsf301.project.model.feedback;
 
+import java.time.LocalDateTime;
+
 import com.hsf301.project.model.mentorBooking.MentorBooking;
 
 import jakarta.persistence.*;
@@ -28,4 +30,7 @@ public class Feedback {
 
     @Column(name="comment",length = 500)
     private String comment;
+
+    @Column(name = "feedback_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime feedbackTime;
 }
