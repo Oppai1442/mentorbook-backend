@@ -5,6 +5,7 @@ import com.hsf301.project.exception.InvalidCredentials;
 import com.hsf301.project.model.request.LoginRequest;
 import com.hsf301.project.model.request.SignupRequest;
 import com.hsf301.project.model.request.TokenRequest;
+import com.hsf301.project.model.request.UserUpdateProfileRequest;
 import com.hsf301.project.model.response.AuthResponse;
 import com.hsf301.project.model.response.UserResponse;
 import com.hsf301.project.model.user.User;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -89,13 +91,32 @@ public class UserService {
         user.setEmail(signupRequest.getEmail());
         user.setPassword(signupRequest.getPassword());
         user.setFullName(signupRequest.getFullName());
-        user.setPhone(signupRequest.getPhoneNumber());
+        user.setPhoneNumber(signupRequest.getPhoneNumber());
+        user.setBirthDate(LocalDate.parse(signupRequest.getBirthDate()));
+        user.setGender(signupRequest.getGender());
 
         userRepository.save(user);
 
         Wallet wallet = new Wallet();
         wallet.setUser(user);
         walletRepository.save(wallet);
+
+        String newToken = jwtService.generateToken(user);
+        UserResponse userResponse = new UserResponse(user, imageService);
+
+        return new AuthResponse(newToken, userResponse);
+    }
+
+    public AuthResponse UserUpdateProfileRequest(UserUpdateProfileRequest updateRequest) {
+        User user = userRepository.findByEmail(updateRequest.getEmail());
+
+        user.setFullName(updateRequest.getFullName());
+        user.setBirthDate(LocalDate.parse(updateRequest.getBirthDate().substring(0, 10)));
+        user.setGender(updateRequest.getGender());
+        user.setPhoneNumber(updateRequest.getPhone());
+        user.setEmail(updateRequest.getEmail());
+
+        userRepository.save(user);
 
         String newToken = jwtService.generateToken(user);
         UserResponse userResponse = new UserResponse(user, imageService);
