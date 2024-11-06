@@ -2,6 +2,7 @@ package com.hsf301.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hsf301.project.model.request.LoginRequest;
 import com.hsf301.project.model.request.SignupRequest;
 import com.hsf301.project.model.request.TokenRequest;
+import com.hsf301.project.model.request.UserUpdateProfileRequest;
 import com.hsf301.project.model.response.ApiResponse;
 import com.hsf301.project.model.response.AuthResponse;
 import com.hsf301.project.service.UserService;
@@ -43,4 +45,12 @@ public class UserController {
 
         return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<ApiResponse<AuthResponse>> update(@Valid @RequestBody UserUpdateProfileRequest updateRequest) {
+        AuthResponse authResponse = userService.UserUpdateProfileRequest(updateRequest);
+
+        return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
+    }
+
 }
