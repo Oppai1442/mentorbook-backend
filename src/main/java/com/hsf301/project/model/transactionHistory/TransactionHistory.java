@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
-
 import com.hsf301.project.model.user.User;
 
 @Data
@@ -39,4 +37,7 @@ public class TransactionHistory {
 
     @Column(name = "completion_time")
     private LocalDateTime completionTime;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
 }

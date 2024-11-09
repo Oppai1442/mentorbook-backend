@@ -43,79 +43,7 @@ public class MentorService {
 
     @Autowired
     private Utils utils;
-
-    // public List<MentorResponse> getAllMentors() {
-    // List<User> mentors = userService.findByRole("mentor");
-    // List<MentorResponse> mentorResponses = new ArrayList<>();
-
-    // Map<Integer, Skills> skillCatalogueMap = skillsService.getSkillsMap();
-
-    // for (User mentor : mentors) {
-    // MentorResponse response = new MentorResponse();
-
-    // List<MentorBooking> totalBooked =
-    // mentorBookingService.getAllBookingsByStatus(mentor, "done");
-    // Double totalRating = 0.0;
-    // for (MentorBooking booking : totalBooked) {
-    // List<Feedback> feedback = feedbackService.findByBooking(booking);
-    // for (Feedback feedbackItem : feedback) {
-    // totalRating += feedbackItem.getRating();
-    // }
-    // }
-
-    // // Bắt đầu:set skill
-    // List<MentorData> mentorSkills = mentorDataService.getMentorById(mentor);
-    // List<Skills> skills = new ArrayList<>();
-
-    // for (MentorData mentorSkill : mentorSkills) {
-    // List<Object> skillIds = new ArrayList<>();
-
-    // try {
-    // skillIds = utils.convertStringToJsonArray(mentorSkill.getMentorSkills());
-    // } catch (Exception e) {
-    // System.err.println("Error converting skills: " + e.getMessage());
-    // }
-
-    // for (Object skillId : skillIds) {
-    // if (skillId instanceof Number) {
-    // Integer id = ((Number) skillId).intValue();
-    // Skills skillCatalogue = skillCatalogueMap.get(id);
-    // if (skillCatalogue != null) {
-    // skills.add(skillCatalogue);
-    // } else {
-    // System.out.println("Skill not found for ID: " + id);
-    // }
-    // } else {
-    // System.out.println("Invalid skill ID type: " +
-    // skillId.getClass().getSimpleName());
-    // }
-    // }
-    // }
-
-    // // Kết thúc: set skill
-
-    // response.setUserId(mentor.getUserId());
-    // response.setFullName(mentor.getFullName());
-    // response.setEmail(mentor.getEmail());
-    // response.setAvatarUrl(imageService.getImageUrl(mentor.getAvatar()));
-    // response.setBackgroundUrl(imageService.getImageUrl(mentor.getBackground()));
-    // response.setSkills(skills);
-    // response.setTotalBooked(totalBooked.size());
-    // if (!totalBooked.isEmpty()) {
-    // response.setMentorRating(totalRating / totalBooked.size());
-    // } else {
-    // response.setMentorRating(0.0); // Nếu không có booking nào, có thể đặt rating
-    // là 0
-    // }
-
-    // mentorResponses.add(response);
-    // }
-
-    // return mentorResponses;
-    // }
-
-    // public List<MentorResponse> getMentors(Integer page, String sort, String
-    // filter) {
+    
     public MentorResponseList getMentors(MentorRequest data) {
         // Lấy danh sách mentor
         List<User> mentors = userService.findByRole("mentor");
@@ -190,16 +118,16 @@ public class MentorService {
         if (data.getSkillIds() != null && !data.getSkillIds().isEmpty()) {
             List<MentorResponse> t = new ArrayList<>();
             for (MentorResponse x : mentorResponses) {
-                List<Skills> skills = x.getSkills();
-                for (Integer skillId : data.getSkillIds()) {
-                    if (skills.stream().anyMatch(skill -> skill.getSkillID() == (skillId))) {
-                        t.add(x);
-                        break;
-                    }
+                List<Integer> mentorSkillIds = x.getSkills().stream()
+                                                  .map(Skills::getSkillID)
+                                                  .collect(Collectors.toList());
+        
+                if (mentorSkillIds.containsAll(data.getSkillIds())) {
+                    t.add(x);
                 }
             }
             mentorResponses = t;
-        }
+        }        
 
         if (data.getRating() != null && !data.getRating().isEmpty()) {
             mentorResponses = mentorResponses.stream()

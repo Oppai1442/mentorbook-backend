@@ -28,5 +28,20 @@
     "name": "Jwt.expirationTime",
     "type": "java.lang.String",
     "description": "A description for 'Jwt.expirationTime'"
+  },
+  {
+    "name": "VNPay.vnp_-tmn-code",
+    "type": "java.lang.String",
+    "description": "A description for 'VNPay.vnp_-tmn-code'"
+  },
+  {
+    "name": "VNPay.vnp_HashSecret",
+    "type": "java.lang.String",
+    "description": "A description for 'VNPay.vnp_HashSecret'"
+  },
+  {
+    "name": "VNPay.vnp_Url",
+    "type": "java.lang.String",
+    "description": "A description for 'VNPay.vnp_Url'"
   }
 ]}

@@ -25,8 +25,8 @@ public class FeedbackResponse {
         this.comment = feedback.getComment();
         this.rating = feedback.getRating();
         this.feedbackTime = feedback.getFeedbackTime();
-        this.userId = feedback.getBooking().getUser().getUserId();
-        this.fullName = feedback.getBooking().getUser().getFullName();
-        this.userAvatarUrl = imageService.getImageUrl(feedback.getBooking().getUser().getAvatar());
+        this.userId = feedback.getBooking().getCustomer().getUserId();
+        this.fullName = feedback.getBooking().getCustomer().getFullName();
+        this.userAvatarUrl = imageService.getImageUrl(feedback.getBooking().getCustomer().getAvatar());
     }
 }

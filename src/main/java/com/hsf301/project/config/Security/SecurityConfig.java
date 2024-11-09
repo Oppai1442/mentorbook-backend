@@ -5,48 +5,38 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${security.csrf.enabled}")
-    private boolean csrfEnabled;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        //
-        if (csrfEnabled) {
-            http.csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            );
-        } else {
-            http.csrf(
-                csrf -> csrf.disable()
-            ); 
-        }
-        
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS config
+            .csrf(csrf -> csrf.disable()) // Adjust as needed
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/login", "/token/csrf").permitAll() // Cho phép truy cập vào endpoint /login
-                .anyRequest().permitAll() // Cần xác thực cho các yêu cầu khác
+                .requestMatchers("*").permitAll() // Adjust these as needed
+                .anyRequest().permitAll()
             );
+
         return http.build();
     }
 
-    // @Bean
-    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    //     http
-    //         .authorizeHttpRequests(authorize -> authorize
-    //             .requestMatchers("/", "/api/list", "/not-found-api").permitAll() // Allow access to / and /api/list
-    //             .anyRequest().authenticated() // Require authentication for all other requests
-    //         )
-    //         .formLogin(withDefaults())
-    //         .httpBasic(withDefaults()); // Custom entry point for redirection;
-    //     return http.build();
-    // }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Replace with allowed origins
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // Adjust as needed
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

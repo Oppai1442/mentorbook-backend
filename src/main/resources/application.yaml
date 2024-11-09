@@ -6,6 +6,12 @@ spring:
     url: jdbc:sqlserver://localhost:1433;databaseName=MentorBookingDB;encrypt=true;trustServerCertificate=true;
     username: sa
     password: 123456
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 60000 
 
   jpa:
     hibernate:
@@ -46,9 +52,6 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
-logging:
-  level:
-    root: OFF # tạm thời tắt log của spring
 
 security:
   csrf:
@@ -61,3 +64,10 @@ Jwt:
   expirationTime: 86400000 #(60*60*1000) * 24 (hiện tại là hết hạn sau 24h)
   useCustomSecrectKey: true
   secretKey: ABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabcABCDEFGHIJKLMNOPQRSTUVWXYZabc
+
+VNPay:
+  Debug: false
+  vnp_TmnCode: 20Z3R7PM
+  vnp_HashSecret: A9U3XUJ3VK9CWFHOCK8TE35QRXBUNUKI
+  vnp_Url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+

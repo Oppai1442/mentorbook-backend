@@ -54,4 +54,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleImageloadException(ImageLoadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
+    
+    @ExceptionHandler(BookingConflictException.class)
+    public ResponseEntity<ErrorResponse> BookingConflictException(BookingConflictException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
+    }
 }

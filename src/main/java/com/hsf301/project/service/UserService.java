@@ -8,6 +8,7 @@ import com.hsf301.project.model.request.TokenRequest;
 import com.hsf301.project.model.request.UserUpdateProfileRequest;
 import com.hsf301.project.model.response.AuthResponse;
 import com.hsf301.project.model.response.UserResponse;
+import com.hsf301.project.model.response.UserResponseContainer;
 import com.hsf301.project.model.user.User;
 import com.hsf301.project.model.wallet.Wallet;
 import com.hsf301.project.repository.UserRepository;
@@ -43,14 +44,14 @@ public class UserService {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         User user = userRepository.findByEmail(email);
-        
+
         if (user == null || !user.getPassword().equals(password)) {
             throw new InvalidCredentials("Invalid username or password");
         }
 
         user.setLastActivity(LocalDateTime.now());
         userRepository.save(user);
-        
+
         String token = jwtService.generateToken(user);
         UserResponse userResponse = new UserResponse(user, imageService);
 
@@ -75,7 +76,7 @@ public class UserService {
 
         user.setLastActivity(LocalDateTime.now());
         userRepository.save(user);
-        
+
         String newToken = jwtService.generateToken(user);
         UserResponse userResponse = new UserResponse(user, imageService);
 
@@ -138,5 +139,58 @@ public class UserService {
 
     public Page<User> findByFullNameContainingIgnoreCase(String filter, Pageable pageable) {
         return userRepository.findByFullNameContainingIgnoreCase(filter, pageable);
+    }
+
+    public User findByUserId(Long userId) {
+        return userRepository.findByUserId(userId);
+    }
+
+    public UserResponseContainer getUsersByPage(Long userId, int currentPage, int resultCount) {
+        List<User> allUsers = userRepository.findAll();
+        int totalUsers = allUsers.size();
+        
+        // Tính số trang dựa trên tổng số người dùng và số bản ghi trên mỗi trang
+        int totalPages = (int) Math.floor((double) totalUsers / resultCount);
+    
+        int fromIndex = currentPage * resultCount;
+        int toIndex = Math.min(fromIndex + resultCount, totalUsers);
+    
+        if (fromIndex >= totalUsers) {
+            return new UserResponseContainer(List.of(), totalPages);
+        }
+    
+        List<User> paginatedUsers = allUsers.subList(fromIndex, toIndex);
+        return new UserResponseContainer(paginatedUsers, totalPages);
+    }
+    
+
+
+    public void updateUserRole(Long userId, String newRole) {
+        User user = findByUserId(userId);
+        System.out.println(user);
+        if (user == null) {
+            throw new InvalidCredentials("User not found");
+        }
+        System.out.println(newRole);
+        user.setRole(newRole);
+        userRepository.save(user);
+    }
+
+    public void updateUserStatus(Long userId, String newStatus) {
+        User user = findByUserId(userId);
+        if (user == null) {
+            throw new InvalidCredentials("User not found");
+        }
+        user.setStatus(newStatus);
+        userRepository.save(user);
+    }
+
+    public void resetUserPassword(Long userId, String newPassword) {
+        User user = findByUserId(userId);
+        if (user == null) {
+            throw new InvalidCredentials("User not found");
+        }
+        user.setPassword(newPassword);
+        userRepository.save(user);
     }
 }

@@ -1,5 +1,7 @@
 package com.hsf301.project.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hsf301.project.model.request.LoginRequest;
+import com.hsf301.project.model.request.ResetPasswordRequest;
+import com.hsf301.project.model.request.SetRoleRequest;
+import com.hsf301.project.model.request.SetStatusRequest;
 import com.hsf301.project.model.request.SignupRequest;
 import com.hsf301.project.model.request.TokenRequest;
+import com.hsf301.project.model.request.UserRequest;
 import com.hsf301.project.model.request.UserUpdateProfileRequest;
 import com.hsf301.project.model.response.ApiResponse;
 import com.hsf301.project.model.response.AuthResponse;
+import com.hsf301.project.model.response.UserResponseContainer;
 import com.hsf301.project.service.UserService;
+
+import com.hsf301.project.model.user.User;
 
 import jakarta.validation.Valid;
 
@@ -52,5 +61,27 @@ public class UserController {
 
         return ResponseEntity.ok(new ApiResponse<AuthResponse>(authResponse));
     }
+    @PostMapping("/get-user")
+    public UserResponseContainer getUsers(@RequestBody UserRequest request) {
+        return userService.getUsersByPage(request.getUserId(), request.getCurrentPage(), request.getResultCount());
+    }
 
+    @PostMapping("/update-role")
+    public ResponseEntity<String> setUserRole(@RequestBody SetRoleRequest request) {
+        System.out.println(request);
+        userService.updateUserRole(request.getUserId(), request.getValue());
+        return ResponseEntity.ok("User role updated successfully");
+    }
+
+    @PostMapping("/update-status")
+    public ResponseEntity<String> setUserStatus(@RequestBody SetStatusRequest request) {
+        userService.updateUserStatus(request.getUserId(), request.getValue());
+        return ResponseEntity.ok("User status updated successfully");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetUserPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetUserPassword(request.getUserId(), "987654321");
+        return ResponseEntity.ok("User password reset successfully");
+    }
 }
